@@ -1,0 +1,318 @@
+# Node API
+Version 1 (GPI 0.2.0-n1, 2014Apr12)
+
+# WIDGETS
+
+        
+This is a list of widgets and their associated attributes to aid in
+        parameterizing and declaring widget.
+        
+###  GenericWidgetGroup
+ This is the base-class for all widgets.  It provides abstract methods
+     and default behavior.  From the node-developer's perspective, this
+     provides the widget-port, visibility, and collapsibility options.
+     
+attribute | type | description
+--- | --- | ---
+ collapsed |  bool | Only hide the 'collapsable' elements of a  widget within its groupbox.
+ id |  int | INTERNAL USE ONLY: used for saving network  information that will aid in reinstantiation.
+ inport |  bool | Turn the widget inport on/off with a bool.
+ outport |  bool | Turn the widget outport on/off with a bool.
+ quietval |  (same type as val) | Set the central value of a widget without triggering an event.
+ reset |  No Arg | Widgets that need to be reset automatically  implement this function (e.g. pushbuttons  where the button needs to be raised again  after the node compute()).
+ val |  type(val) | Set the central value of a widget.
+ visible |  bool | Set the widget groupbox's visibility within  the node menu.
+
+###  ComboBox
+ Provides a popup list for different labels.
+     
+attribute | type | description
+--- | --- | ---
+ index |  int | gives the corresponding index of the chosen item, starting at 0.  So, for example, self.getAttr('myfruitbox',index) would return a 2 if 'orange' were selected from the item list given in this table, while self.getVal('myfruitbox') would return the string 'orange'. 
+ items |  list(str,str,...) | list of items to choose from. Only one item can be chosen from the list. 
+ val |  int | item index
+
+###  DisplayBox
+ A 2D QPixmap using a QLabel using built-in interpolation schemes.
+     
+attribute | type | description
+--- | --- | ---
+ interp |  bool | Interpolated scaling / nearest neighbor, boolean True/False.
+ line |  N/A | Doesn't do anything yet.          
+ noscroll |  bool | Turn display window scroll on/off with boolean False/True.
+ pixmap |  QPixmap | A QPixmap to be displayed.
+ points |  N/A | Doesn't do anything yet.          
+ scale |  float | Pre-defined image dimension scale (float)
+ val |  QImage | Image is a QImage().          
+
+###  DoubleSpinBox
+ Spin box for floating point values. 
+attribute | type | description
+--- | --- | ---
+ decimals |  int | The number of displayed decimal places (int).
+ immediate |  bool | Make the value changes immediate with scroll wheel etc...
+ label |  str | Set a text left of the spinbox (str).
+ max |  float | Max float value (<=).
+ min |  float | Min float value (>=).
+ singlestep |  float | The stepsize of one up/down button click (float).
+ val |  float | The value (float).
+ wrapping |  bool | Allow the up/down buttons to cause a wrap  when exceeding max or min values (bool).
+
+###  ExclusivePushButtons
+ Provides a set of check boxes for different labels.
+     -Buttons are placed side-by-side.
+     
+attribute | type | description
+--- | --- | ---
+ buttons |  list(str,str,...) | A list of labels (e.g. ['b1', 'b2',...]).
+ val |  int | The position of the chosen button (zero-based, int).
+
+###  ExclusiveRadioButtons
+ Provides a set of check boxes for different labels.
+     -Buttons are stacked.
+     
+attribute | type | description
+--- | --- | ---
+ buttons |  list(str,str,...) | A list of labels (e.g. ['b1', 'b2',...]).
+ val |  int | The position of the chosen button (zero-based, int).
+
+###  NonExclusivePushButtons
+ Provides a set of check boxes for different labels.
+     -Buttons are placed side-by-side.
+     
+attribute | type | description
+--- | --- | ---
+ buttons |  list(str,str,...) | A list of labels (e.g. ['b1', 'b2',...]).
+ val |  int or list(int,int,...) | The position of the chosen button (zero-based, int or list).
+
+###  OpenFileBrowser
+ Provide a QFileDialog() at the push of a button.
+     
+attribute | type | description
+--- | --- | ---
+ button_title |  str | A title centered on the pushbutton (str).
+ caption |  str | Set browser title-bar (str).
+ directory |  str | Set the default directory (str).
+ filter |  str | Set the file extension filter (e.g. 'io_field (*.fld);;all (*)').          
+ val |  str | The filename and path (str).
+
+###  PushButton
+ A simple single pushbutton box.
+attribute | type | description
+--- | --- | ---
+ button_title |  str | Place a title, centered, on the button.
+ toggle |  bool | Make the pushbutton a toggle button on/off -> True/False.
+ val |  bool | The button state is a bool: on/off -> True/False.
+
+###  SaveFileBrowser
+ Provide a QFileDialog() at the push of a button.
+     
+attribute | type | description
+--- | --- | ---
+ button_title |  str | A title centered on the pushbutton (str).
+ caption |  str | Set browser title-bar (str).
+ directory |  str | Set the default directory (str).
+ filter |  str | Set the file extension filter (e.g. 'io_field (*.fld);;all (*)').          
+ val |  str | The filename and path (str).
+
+###  Slider
+ A slider for integer values. 
+attribute | type | description
+--- | --- | ---
+ max |  int | Max integer value (<=).
+ min |  int | Min integer value (>=).
+ val |  int | The value (int).
+
+###  SpinBox
+ Spin box for integer values. 
+attribute | type | description
+--- | --- | ---
+ immediate |  bool | Make the value changes immediate with scroll wheel etc...
+ label |  str | Set a text left of the spinbox (str).
+ max |  int | Max integer value (<=).
+ min |  int | Min integer value (>=).
+ singlestep |  int | The stepsize of one up/down button click (int).
+ val |  int | The value (int).
+ wrapping |  int | The number of displayed decimal places (int).
+
+###  StringBox
+ A simple single line string box.
+attribute | type | description
+--- | --- | ---
+ mask |  bool | Toggle input mask
+ maskedval |  None | No setter for storing.          
+ val |  str | Set the string (str).
+
+###  TextBox
+ Provides a multi-line plain-text display.
+attribute | type | description
+--- | --- | ---
+ openExternalLinks |  bool | Open hyperrefs
+ val |  str | The full plain-text to be displayed (str).
+ wordwrap |  bool | Turn on/off with boolean True/False.
+
+###  TextEdit
+ Provides an editable text window with
+     scrollbar and python code syntax highlighting.
+     
+attribute | type | description
+--- | --- | ---
+ val |  str | The full plain-text to be displayed (str).
+
+###  WebBox
+ For loading web urls. 
+attribute | type | description
+--- | --- | ---
+ passwd |  str | For login sites
+ username |  str | For login sites
+ val |  str | The url (str).
+
+
+# PORT Types
+
+        
+The following types are used to define a node port for limiting the
+        connection between nodes to the predefined port-types.  These labels are
+        used when implementing `addInPort()` and `addOutPort()` port declaration
+        functions.
+
+        
+### PASS
+        
+Has the affinity for any port type and allows any port connection.
+        
+###   GLOList
+ Allows passing GPI-GL object definitions to be passed in lists.
+     
+
+###   NPYarray
+ The NPYarray type provides port enforcement for numpy
+     multidimensional arrays (ndarray).  The enforcement parms
+     are type (ndarray), dtype, ndim, dimension range (drange),
+     shape, and vec (the len of the last dim).  Enforcement
+     priority for aliased parms goes ndim->drange->shape.  Although
+     shape and vec can overlap, they are enforced independently.
+     
+attribute | type | description
+--- | --- | ---
+ drange |  tuple(int,int) | Requires a dimension range tuple (min, max).
+ dtype |  numpy dtype | Requires an NPY type (i.e. float32, complex64, etc...)
+ ndim |  int | Set enforcement for the number of dimensions.  Requires (int).
+ shape |  tuple(int,int,...) | Requires the dimension lengths in an integer tuple.
+ vec |  int | Requires an integer representing the length of the last  (most varying) dimension (or shape[-1]).
+
+###   COMPLEX
+ Enforcement for the standard python-complex.
+
+###   DICT
+ Enforcement for the standard python-dict.
+
+###   FLOAT
+ Enforcement for the standard python-float.
+     
+attribute | type | description
+--- | --- | ---
+ range |  float | Specify a float range using a tuple (min, max).
+
+###   INT
+ Enforcement for the standard python-int.
+attribute | type | description
+--- | --- | ---
+ range |  int | Specify an integer range using a tuple (min, max).
+
+###   LIST
+ Enforcement for the standard python-list.
+
+###   LONG
+ Enforcement for the standard python-long.
+attribute | type | description
+--- | --- | ---
+ range |  tuple(int,int) | Specify an integer range using a tuple (min, max).
+
+###   STRING
+ Enforcement for the standard python-str.
+
+###   TUPLE
+ Enforcement for the standard python-tuple.
+
+
+
+# GETTERS & SETTERS
+
+
+        
+Getters & Setters are functions that make up the node API.  They provide
+        access to the UI elements (i.e. in-ports, out-ports, widgets).
+        
+## Node Initialization
+
+
+        
+These methods are used to declare in-ports, out-ports and widgets within
+        the `initUI()` node method.
+        
+### addWidget
+                addWidget(self, wdg=None, title=None, **kwargs)
+                        wdg = (str) corresponds to the widget class name
+                        title = (str) is the string label given in the node-menu
+                        kwargs = corresponds to the set_<arg> methods specific
+                                    to the chosen wdg-class.
+
+
+### addInPort
+                addInPort(self, title=None, type=None, obligation=100, menuWidget=None, cyclic=False, **kwargs)
+                        title = (str) port-title shown in tooltips
+                        type = (str) class name of extended type
+                        obligation = gpi.REQUIRED or gpi.OPTIONAL (default REQUIRED)
+                        menuWidget = INTERNAL USE
+                        kwargs = any set_<arg> method belonging to the
+                                    GPIDefaultType derived class.
+
+
+### addOutPort
+                addOutPort(self, title=None, type=None, obligation=100, menuWidget=None, **kwargs)
+                        title = (str) port-title shown in tooltips
+                        type = (str) class name of extended type
+                        obligation = dummy parm to match function footprint
+                        menuWidget = INTERNAL USE
+                        kwargs = any set_<arg> method belonging to the
+                                    GPIDefaultType derived class.
+
+
+## Node Compute
+
+
+        
+These methods are used to reference data from in-ports, out-ports and widgets
+        within the `compute()` routine.
+        
+### getVal
+                getVal(self, title)
+                        Returns get_val() from wdg-class (see getAttr()).
+                                
+
+
+### getAttr
+                getAttr(self, title, attr)
+                        title = (str) wdg-class name
+                        attr = (str) corresponds to the get_<arg> of the desired attribute.
+
+
+### setAttr
+                setAttr(self, title, **kwargs)
+                        title = (str) the corresponding widget name.
+                        kwargs = args corresponding to the get_<arg> methods of the wdg-class.
+
+
+### getData
+                getData(self, title)
+                        title = (str) the name of the InPort.
+                                
+
+
+### setData
+                setData(self, title, data)
+                        title = (str) name of the OutPort to send the object reference.
+                        data = (object) any object corresponding to a GPIType class.
+
+
