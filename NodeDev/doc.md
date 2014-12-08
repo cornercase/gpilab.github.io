@@ -111,6 +111,8 @@ Frame code with starttime() and endtime() to measure wall time of computation.  
 
     self.starttime()  # time your code, NODE level log
 
+    ...
+
     self.endtime('You can put text here if you want')  # endtime w/ message
 
 ##  Logging Methods
@@ -127,14 +129,14 @@ Print messages (e.g. error messages) in the terminal/console window.  GPI main m
 ##  Event Checking Methods
 These methods allow the node to perform selective computation based on what activated the node (e.g. a widget event vs. a port event).
 
-    self.portEvents()
-    Returns the name of a port that received new data, or Null if no port has received new data since the last node execution.
+`self.portEvents()`<br>
+Returns the name of a port that received new data, or Null if no port has received new data since the last node execution.
 
-    self.widgetEvents()
-    Returns the name of a port that was activated, or Null if no port has received new data since the last node execution.
+`self.widgetEvents()`<br>
+Returns the name of a port that was activated, or Null if no port has received new data since the last node execution.
 
-    self.getEvents() # super set of events
-    Returns either the name of the last port to receive data or the last widget to have been changed (whichever occurred last)
+`self.getEvents() # super set of events`<br>
+Returns either the name of the last port to receive data or the last widget to have been changed (whichever occurred last)
 
 
 Note on current behavior: Only the latest event for a node is kept.  This means that if the following occurs for a given node (in the specified temporal order):
@@ -156,7 +158,7 @@ This is because the data came after the widget was set.  A future version of GPI
 
 PyFI, or “Python Function Interface”, is a collection of macros and interface classes that simplify exposing C++ functions to the Python interpreter.  The macros also reduce the amount of code needed to translate Numpy arrays in Python to the PyFI Array class in C++ (and vice versa).  
 
-    PyFI can be used to extend or embed Python.  Most of the time PyFI is used to speed up algorithms by moving them from Python to C/C++, extending Python.  However, the vast Python library can still be leveraged from within C++ code by embedding Python, allowing the developer to make the occasional Python function call from C++ when something can be more easily accomplished through Python.  The PyFI interface is separate from GPI and can be used to extend or embed Python in other C++ applications.
+PyFI can be used to extend or embed Python.  Most of the time PyFI is used to speed up algorithms by moving them from Python to C/C++, extending Python.  However, the vast Python library can still be leveraged from within C++ code by embedding Python, allowing the developer to make the occasional Python function call from C++ when something can be more easily accomplished through Python.  The PyFI interface is separate from GPI and can be used to extend or embed Python in other C++ applications.
 
 PyFI is located in the ‘core’ GPI library and can be included in a cpp file via:
 
@@ -193,28 +195,33 @@ These macros are required to successfully compile a Python/C++ extension module 
 
 ## Extending Python (Input/Output Macros)
 
-`PYFI_POSARG(type, ptr)`  This macro declares a pointer of the given type and converts the input args from the Python interface to the corresponding C++ variables.  Valid types are double, int64_t (long depending on the OS), `std::string`, `Array<float>`, `Array<double>`, `Array<int32_t>`, `Array<int64_t>`, `Array<complex<float> >`, `Array<complex<double> >`.
+`PYFI_POSARG(type, ptr)`<br>
+This macro declares a pointer of the given type and converts the input args from the Python interface to the corresponding C++ variables.  Valid types are double, int64_t (long depending on the OS), `std::string`, `Array<float>`, `Array<double>`, `Array<int32_t>`, `Array<int64_t>`, `Array<complex<float> >`, `Array<complex<double> >`.
 
     Ex:
         PYFI_POSARG(double, myInput1);
 
-`PYFI_KWARG(type, ptr, default)`  This macro declares a pointer of the given type and converts the input keyword argument (http://docs.python.org/2/tutorial/controlflow.html#keyword-arguments) to the pointed C++ variable, if it was passed.  If the keyword arg is not used, then the default arg is set.
+`PYFI_KWARG(type, ptr, default)`<br>
+This macro declares a pointer of the given type and converts the input keyword argument (http://docs.python.org/2/tutorial/controlflow.html#keyword-arguments) to the pointed C++ variable, if it was passed.  If the keyword arg is not used, then the default arg is set.
 
     Ex:
         double myDefault1 = 1.0;
         PYFI_KWARG(double, myInput1, myDefault1);
 
+`PYFI_ERROR(string)`<br>
+This macro raises a Python Runtime exception and passes the error message contained in the string.
 
+`PYFI_SETOUTPUT(ptr)`<br>
+The output arguments are set using this macro.  If more than one output exists, then all are packaged in a tuple.  This macro will create and copy PyFI arrays (passed as ptr) to Python Numpy arrays in the Python session.
 
-    `PYFI_ERROR(string)`  This macro raises a Python Runtime exception and passes the error message contained in the string.
+`PYFI_SETOUTPUT_ALLOC(type, ptr, dims)`<br>
+If the output array size is known, before the algorithm code, this macro can be used to generate an output Numpy array that is accessible within the C++ code as a PyFI array.  This is more time and memory efficient than using `PYFI_SETOUTPUT` with PyFI arrays.  This macro only applies to PyFI arrays.  ‘dims’ can be a `std::vector<uint64_t>` or a `PyFI::ArrayDimensions` object.
 
-    `PYFI_SETOUTPUT(ptr)`  The output arguments are set using this macro.  If more than one output exists, then all are packaged in a tuple.  This macro will create and copy PyFI arrays (passed as ptr) to Python Numpy arrays in the Python session.
+`deb`<br>
+This macro can be placed in the code to print out the line number and file name of the executed code.
 
-    `PYFI_SETOUTPUT_ALLOC(type, ptr, dims)`  If the output array size is known, before the algorithm code, this macro can be used to generate an output Numpy array that is accessible within the C++ code as a PyFI array.  This is more time and memory efficient than using `PYFI_SETOUTPUT` with PyFI arrays.  This macro only applies to PyFI arrays.  ‘dims’ can be a `std::vector<uint64_t>` or a `PyFI::ArrayDimensions` object.
-
-    `deb`  This macro can be placed in the code to print out the line number and file name of the executed code.
-
-    `coutv(var)`  This macro prints the name and contents of the variable ‘var’ passed to it.
+`coutv(var)`<br>
+This macro prints the name and contents of the variable ‘var’ passed to it.
 
 ## PyFI Arrays
 
@@ -231,81 +238,82 @@ An array wrapper to FFTW library is included in the PyFI::FFTW namespace.  The i
 
 #### Constructors
 
-    Array(std::vector<uint64_t> dims)
-    Construct an array using a standard vector class containing the dimension sizes.  This is the recommended way for dynamic dimensionality.
+`Array(std::vector<uint64_t> dims)`<br>
+Construct an array using a standard vector class containing the dimension sizes.  This is the recommended way for dynamic dimensionality.
 
-    Array(uint64_t i, uint64_t j, ....)
-    Construct arrays with integer arguments for the size of each dimension.  The number of arguments determines the dimensionality.
+`Array(uint64_t i, uint64_t j, ....)`<br>
+Construct arrays with integer arguments for the size of each dimension.  The number of arguments determines the dimensionality.
 
 
 #### Array Information
 
-    ndim()
-    The number of dimensions as a uint64_t type.
+`ndim()`<br>
+The number of dimensions as a uint64_t type.
 
-    dimensions_vector()
-    Returns a standard vector with the dimension sizes.
+`dimensions_vector()`<br>
+Returns a standard vector with the dimension sizes.
 
-    size()
-        The total number of elements as a uint64_t type.
+`size()`<br>
+The total number of elements as a uint64_t type.
 
-    data()
-        Returns a pointer to the contiguous data segment.
+`data()`<br>
+Returns a pointer to the contiguous data segment.
 
-    isWrapper()
-    Returns a bool indicating whether the array wraps an external data segment (usually a Numpy data segment).
+`isWrapper()`<br>
+Returns a bool indicating whether the array wraps an external data segment (usually a Numpy data segment).
 
 
 #### Operators
 
-Array(uint64_t i, uint64_t j, ...)
+`Array(uint64_t i, uint64_t j, ...)`<br>
 The indexing operator calculates multi-dimensional indices given the input integer arguments and returns the dereferenced pointer to the location in the data segment.  This is the usual way for accessing array memory.  All N-D arrays can also be accessed as 1-D arrays.
 
-    =, *=, /=, +=, -=
-    The right-hand-side arguments can be a single element of the same type as the array or an array of the same type.  Arrays must be the same ‘size()’.  Operations are on an element-wise basis (not matrix math).
+`=, *=, /=, +=, -=`<br>
+The right-hand-side arguments can be a single element of the same type as the array or an array of the same type.  Arrays must be the same ‘size()’.  Operations are on an element-wise basis (not matrix math).
 
-    +, *, -, /
-    Math operators that work on both arrays and single elements.  All operations are on an element-wise basis (not matrix math).
+`+, *, -, /`<br>
+Math operators that work on both arrays and single elements.  All operations are on an element-wise basis (not matrix math).
 
-    ==, !=, <=, >=, <, >
-    Inequalities return an Array<bool> object containing a bit-mask evaluated with the condition for each element.  Works with Arrays or single elements (for quick thresholding).
+`==, !=, <=, >=, <, >`<br>
+Inequalities return an Array<bool> object containing a bit-mask evaluated with the condition for each element.  Works with Arrays or single elements (for quick thresholding).
 
 #### Builtins
 
-    sum()
-    The sum of all elements returned as a datum of the base array type.
+`sum()`<br>
+The sum of all elements returned as a datum of the base array type.
 
-    prod()
-    The product of all elements returned as a datum of the base array type.
+`prod()`<br>
+The product of all elements returned as a datum of the base array type.
 
-    min(), max()
-    The min or max of all elements returned as a datum of the base array type.
+`min(), max()`<br>
+The min or max of all elements returned as a datum of the base array type.
 
-    abs()
-    Calculates the fabs() on an element-wise basis (operates on the array in-place)
+`abs()`<br>
+Calculates the fabs() on an element-wise basis (operates on the array in-place)
 
-    any(T val)
+`any(T val)`<br>
     Returns true if any of the elements are equal to val.
 
-    any_infs(), any_nans()
-    Checks for infs or nans respectively.  Returns a bool.
-    clamp_max(T thresh), clamp_min(T thresh)
-    Sets arrays > or < thresh equal to thresh.  Operates in-place.
+`any_infs(), any_nans()`<br>
+Checks for infs or nans respectively.  Returns a bool.
 
-    mean(), stddev()
-    Calculates sample mean and standard-deviation of the array elements.  Returns as a datum of the base array type.
+`clamp_max(T thresh), clamp_min(T thresh)`<br>
+Sets arrays > or < thresh equal to thresh.  Operates in-place.
 
-    as_ULONG(), as_FLOAT(), as_CFLOAT(), as_DOUBLE(), as_CDOUBLE(), as_LONG(), as_INT(), as_UCHAR()
-    Returns a copy of the array as the selected base type.
+`mean(), stddev()`<br>
+Calculates sample mean and standard-deviation of the array elements.  Returns as a datum of the base array type.
 
-    insert(Array<T> arr)
-    Insert the elements (centered in each dimension) of ‘arr’ into THIS array.  If ‘arr’ is larger then the extra elements are cropped.
+`as_ULONG(), as_FLOAT(), as_CFLOAT(), as_DOUBLE(), as_CDOUBLE(), as_LONG(), as_INT(), as_UCHAR()`<br>
+Returns a copy of the array as the selected base type.
 
-    get_resized(std::vector<uint64_t>), get_resized(uint64_t), get_resized(std::vector<double>), get_resized(double)
-    Return a copy of THIS array inserted into a new array of a different size.  Integer arguments indicate specific dimension sizes (isotropic for single value) and double arguments indicate a scale size of the original array dimensions.
+`insert(Array<T> arr)`<br>
+Insert the elements (centered in each dimension) of ‘arr’ into THIS array.  If ‘arr’ is larger then the extra elements are cropped.
 
-    reshape(std::vector<uint64_t)
-    Change the dimensionality of THIS array.  The total size must not change.
+`get_resized(std::vector<uint64_t>), get_resized(uint64_t), get_resized(std::vector<double>), get_resized(double)`<br>
+Return a copy of THIS array inserted into a new array of a different size.  Integer arguments indicate specific dimension sizes (isotropic for single value) and double arguments indicate a scale size of the original array dimensions.
+
+`reshape(std::vector<uint64_t)`<br>
+Change the dimensionality of THIS array.  The total size must not change.
 
 
 ##  Build Setup & Example
@@ -413,30 +421,30 @@ Other simple examples can be found in the template_PyMOD.cpp.
 
 The PyCallable operation is similar to the PyFunction interface in that function arguments are parsed in the order in which they are given, in python its left to right, in PyFI its top to bottom.  Regardless of how it is constructed, arguments are passed and returned to and from the Python function by the method functions.  The passing functions are:
 
-    PyCallable::SetArg_Array(ptr)
+`PyCallable::SetArg_Array(ptr)`<br>
 ‘ptr’ is a pointer to a PyFI::Array<T> object.
 
-    PyCallable::SetArg_String(string)
+`PyCallable::SetArg_String(string)`<br>
 Takes a std::string.
 
-    PyCallable::SetArg_Long(long)
+`PyCallable::SetArg_Long(long)`<br>
 Takes a long integer (i.e. int64_t)
 
-    PyCallable::SetArg_Double(double)
+`PyCallable::SetArg_Double(double)`<br>
 Takes a double precision float.
 
 The return functions are:
 
-    PyCallable::GetReturn_Array(ptr_ptr)
+`PyCallable::GetReturn_Array(ptr_ptr)`<br>
 ‘ptr_ptr’ is a reference to a pointer to a PyFI::Array<T> object.  This modifies the input pointer given.  This is a templated function.
 
-    PyCallable::GetReturn_String()
+`PyCallable::GetReturn_String()`<br>
 Returns a std::string.
 
-    PyCallable::GetReturn_Long()
+`PyCallable::GetReturn_Long()`<br>
 Returns a long (int64_t).
 
-    PyCallable::GetReturn_Double()
+`PyCallable::GetReturn_Double()`<br>
 Returns a double.
 
 Once all the arguments are set, the Run() method can be called.  If any of the GetReturn_ functions are called, then Run() is automatically invoked for the first GetReturn_.
