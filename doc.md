@@ -3,6 +3,8 @@ Welcome to the GPI documentation page!
 
 # Contents
 
+<p style="font-size:30px"> [Configuration](./Configuration) </p>
+
 <p style="font-size:30px"> [User Interface](./UserInterface) </p>
 
 <p style="font-size:30px"> [Keyboard & Mouse Controls](./Controls) </p>
